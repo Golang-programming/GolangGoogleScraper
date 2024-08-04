@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"strings"
@@ -219,15 +218,6 @@ type SearchResult struct {
 	ResultDesc  string
 }
 
-var userAgents = []string{
-	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
-	"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
-	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
-	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38",
-	"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0",
-	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38",
-}
-
 func buildGoogleUrls(searchTerm, countryCode, languageCode string, pages, count int) ([]string, error) {
 	toScrape := []string{}
 	searchTerm = strings.Trim(searchTerm, " ")
@@ -247,41 +237,35 @@ func buildGoogleUrls(searchTerm, countryCode, languageCode string, pages, count 
 	return toScrape, nil
 }
 
-func randomUserAgent() string {
-	rand.Seed(time.Now().Unix())
-	randNum := rand.Int() % len(userAgents)
-	return userAgents[randNum]
-}
-
 func googleResultParsing(response *http.Response, rank int) ([]SearchResult, error) {
 	doc, err := goquery.NewDocumentFromResponse(response)
-
 	if err != nil {
 		return nil, err
 	}
 
 	results := []SearchResult{}
 
-	sel := doc.Find("div.g")
+	// Selecting the search result elements
+	sel := doc.Find("div.g") // .tF2Cxc is the common class for each search result entry
 
 	rank++
 
 	for i := range sel.Nodes {
 		item := sel.Eq(i)
-		linkTag := item.Find("a")
+		linkTag := item.Find(".yuRUbf a")
 		link, _ := linkTag.Attr("href")
-		titleTag := item.Find("h3.r")
-		descTag := item.Find("span.st")
+		titleTag := item.Find("h3")
+		descTag := item.Find(".yXK7lf.lVm3ye.r025kc.hJNv6b").Find("span") // I want to get text from span in this Tag
 		desc := descTag.Text()
 		title := titleTag.Text()
 		link = strings.Trim(link, " ")
 
 		if link != "" && link != "#" && !strings.HasPrefix(link, "/") {
 			result := SearchResult{
-				rank,
-				desc,
-				link,
-				title,
+				ResultRank:  rank,
+				ResultURL:   link,
+				ResultTitle: title,
+				ResultDesc:  desc,
 			}
 			results = append(results, result)
 			rank++
@@ -337,7 +321,7 @@ func GoogleScrape(searchTerm, countryCode, languageCode string, proxyString inte
 func scrapeClientRequest(searchUrl string, proxyString interface{}) (*http.Response, error) {
 	baseClient := getScrapeClient(proxyString)
 	req, _ := http.NewRequest("GET", searchUrl, nil)
-	req.Header.Set("User-Agent", randomUserAgent())
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36")
 
 	res, err := baseClient.Do(req)
 
