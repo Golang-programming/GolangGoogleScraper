@@ -14,7 +14,7 @@ Google Scraper is a command-line tool for scraping Google search results. It sup
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/Golang-programming/GoogleScraper.git
+    git clone https://github.com/Golang-programming/GoogleScraper
     cd GoogleScraper
     ```
 
@@ -65,6 +65,7 @@ Feel free to contribute by opening issues or submitting pull requests.
 
 ## Support
 
+For support and feature, please open an issue on the [GitHub repository](https://github.com/Golang-programming/GoogleScraper/issues).
 For questions, contact [your email](mailto:zeshanshakil0@gmail.com).
 
 If you find this project useful, please star the repository and follow me on [GitHub](https://github.com/zeshantech).
