@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -338,10 +340,47 @@ func scrapeClientRequest(searchUrl string, proxyString interface{}) (*http.Respo
 }
 
 func main() {
-	res, err := GoogleScrape("Imran Khan", "com", "en", nil, 2, 50, 10)
-	if err == nil {
-		for _, res := range res {
-			fmt.Println(res)
-		}
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter search term: ")
+	searchTerm, _ := reader.ReadString('\n')
+	searchTerm = strings.TrimSpace(searchTerm)
+
+	fmt.Print("Enter country code (e.g., 'com', 'uk'): ")
+	countryCode, _ := reader.ReadString('\n')
+	countryCode = strings.TrimSpace(countryCode)
+
+	fmt.Print("Enter language code (e.g., 'en', 'fr'): ")
+	languageCode, _ := reader.ReadString('\n')
+	languageCode = strings.TrimSpace(languageCode)
+
+	fmt.Print("Enter number of pages to scrape: ")
+	var pages int
+	fmt.Scanln(&pages)
+
+	fmt.Print("Enter number of results per page: ")
+	var count int
+	fmt.Scanln(&count)
+
+	fmt.Print("Enter backoff time (seconds): ")
+	var backoff int
+	fmt.Scanln(&backoff)
+
+	fmt.Println("Loading... Please wait.")
+
+	// Call the GoogleScrape function
+	results, err := GoogleScrape(searchTerm, countryCode, languageCode, nil, pages, count, backoff)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	// Print the results
+	fmt.Println("\nSearch Results:")
+	for _, result := range results {
+		fmt.Printf("Rank: %d\n", result.ResultRank)
+		fmt.Printf("Title: %s\n", result.ResultTitle)
+		fmt.Printf("URL: %s\n", result.ResultURL)
+		fmt.Printf("Description: %s\n", result.ResultDesc)
+		fmt.Println()
 	}
 }
