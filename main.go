@@ -11,8 +11,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-// import
-
 var googleDomains = map[string]string{
 	"com": "https://www.google.com/search?q=",
 	"ac":  "https://www.google.ac/search?q=",
@@ -333,7 +331,6 @@ func GoogleScrape(searchTerm, countryCode, languageCode string, proxyString inte
 
 		time.Sleep(time.Duration(backoff) * time.Second) // To avoid DOS protections)
 	}
-
 	return results, nil
 }
 
@@ -357,9 +354,8 @@ func scrapeClientRequest(searchUrl string, proxyString interface{}) (*http.Respo
 }
 
 func main() {
-	res, err := GoogleScrape("Zeshan shakil", "com", "en", nil, 1, 30, 10)
-
-	if err != nil {
+	res, err := GoogleScrape("Imran Khan", "com", "en", nil, 2, 50, 10)
+	if err == nil {
 		for _, res := range res {
 			fmt.Println(res)
 		}
