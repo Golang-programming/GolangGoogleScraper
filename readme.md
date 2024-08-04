@@ -14,8 +14,8 @@ Google Scraper is a command-line tool for scraping Google search results. It sup
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/googlescraper.git
-    cd googlescraper
+    git clone https://github.com/Golang-programming/GoogleScraper.git
+    cd GoogleScraper
     ```
 
 2. Install dependencies:
@@ -25,14 +25,14 @@ Google Scraper is a command-line tool for scraping Google search results. It sup
 
 3. Build the application:
     ```sh
-    go build -o googlescraper
+    go build -o GoogleScraper
     ```
 
 ## Usage
 
 1. Run the application:
     ```sh
-    ./googlescraper
+    ./GoogleScraper
     ```
 
 2. Enter the required information when prompted:
